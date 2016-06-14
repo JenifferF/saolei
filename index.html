@@ -1,0 +1,194 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>扫雷</title>
+</head>
+<style>
+   *{
+    	list-style: none;
+    }
+    body{
+      background-image: url(img/53.jpg);
+      
+    }
+    .sum{
+      width:700px;
+      height: 600px;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      margin:auto;
+      padding: 25px;
+      border: 1px solid #ccc;
+      background-image: url(img/53.jpg);
+      background-position: -350px 0;
+      background-repeat: no-repeat;
+      border-radius: 5%;
+    }
+	.box{
+		width: 600px;
+		height: 600px;
+		position: absolute;
+    /*float: left;*/
+    /*box-sizing:border-box;*/
+		left: 0;
+		top: 0;
+		bottom: 0;
+    border: 2px solid #ccc;
+		right: 0;
+		margin:auto;
+    /*background-image: url(img/u.jpg);*/
+		/*background:#E4C700;*/
+		border-right: 0;
+		border-bottom: 0;
+	}
+	.block{
+		width:58px;
+		height:58px;
+		text-align:center;
+		line-height: 58px;
+		float:left; 
+    border-right: 2px solid #ccc;
+    border-bottom: 2px solid #ccc;
+		background-image: url(img/z.png); 
+    background-position: 13px -15px;
+    background-repeat: no-repeat;
+    font-size: 24px;
+    text-align: center;
+    line-height: 58px;
+    color: #fff;
+    cursor: pointer;
+	}
+	.biaoji::after{
+		content:'⛳';
+		color:red;
+	}
+	.active{
+		background: #4D9A00;
+	}
+  .top{
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin:auto;
+    background: rgba(0,0,0,0.7);
+    display: none;
+    text-align: center;
+    line-height: 600px;
+    color:#fff;
+    font-size: 24px;
+    color: #fff;
+  }
+  .menu{
+    position: absolute;
+    width: 200px;
+    height: 598px;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    background: #F484B7;
+    left: 50%;
+    border: 2px solid #511515;
+    margin-left: -507px;
+  }
+  .act{
+    background-image: url(img/a.png);
+    background-position: -10px 2px;
+    width: 58px;
+    height: 58px;
+  }
+</style>
+<body>
+  <!-- <div class="menu"></div> -->
+  <div class="sum">
+    	<div class="box"></div>
+      <div class="top">
+        <!-- <img src="" alt=""> -->
+      </div>    
+  </div>
+</body>
+<script src="jquery工程文件/jquery-1.12.0.js"></script>
+<script>
+// 右键默认事件
+    $(document).on('contextmenu',false);
+    var zb2id=function(a,b){
+    	return a+'-'+b;
+    }
+    var jisuan=function(x,y){
+       var nub=0;
+       if($('#'+zb2id(x-1,y)).is('.lei')){nub++};
+       if($('#'+zb2id(x-1,y-1)).is('.lei')){nub++};
+       if($('#'+zb2id(x-1,y+1)).is('.lei')){nub++};
+       if($('#'+zb2id(x,y-1)).is('.lei')){nub++};
+       if($('#'+zb2id(x,y+1)).is('.lei')){nub++};
+       if($('#'+zb2id(x+1,y-1)).is('.lei')){nub++};
+       if($('#'+zb2id(x+1,y)).is('.lei')){nub++};
+       if($('#'+zb2id(x+1,y+1)).is('.lei')){nub++};
+       return nub;
+    }
+    var zuojian=function(e){
+    	if($(this).is('.biaoji')){
+    		return;
+    	}
+    		if(e.data.lei){
+         	alert('踩雷了')
+          $('.top').show().text('☹ 亲，加油哦！ 再来一局吧')
+          $('.lei').each(function(v,el){
+            $(el).addClass('act');
+          })
+         }else{
+         	$(this)
+         	.addClass('active')
+         	.text(jisuan(e.data.x,e.data.y))
+         }         
+    }
+    var youjian=function(e){
+    	if($(this).is('.active')){
+    		return;
+    	}
+         $(this).toggleClass('biaoji');
+         if($('.biaoji.lei').length===$('.lei').length){
+         	alert('恭喜你，你赢了')
+          $('.top').show(100).text('✌ 再来一局')
+         }
+    }
+    var chuli=function(e){
+    	if(e.which===1){
+    		$.proxy(zuojian,this)(e);
+    	}else if(e.which===3){
+    		$.proxy(youjian,this)(e);
+    	}
+    }
+    function aa(){
+      $('.box').empty()
+      for(var i=0;i<10;i++){
+         for(var j=0;j<10;j++){
+        var islei=Math.random() >0.9;
+      $('<div>')
+      .addClass(function(){
+        return 'block '+(islei? 'lei':'')
+      })
+      .attr('id',i+'-'+j)
+      .on('mousedown',{x:i,y:j,lei:islei},chuli)
+      .appendTo($('.box'))
+    }
+  }
+    }      
+   aa()    
+  $('.top').on('click',function(){
+    $(this).css({display:'none'})
+    aa()
+  })
+</script>
+</html>
+
+<!-- 1.禁用右键
+2.画场景    id 类名 文字 事件（传数据） 循环
+3.画雷 -->
